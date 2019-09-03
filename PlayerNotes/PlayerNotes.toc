@@ -1,0 +1,8 @@
+## Interface: 11302
+## Title: Player Notes
+## Author: Rider Jensen
+## Version: 0.1
+## SavedVariables: mySavedVar
+## SavedVariablesPerCharacter: CharacterVar
+
+main.lua
