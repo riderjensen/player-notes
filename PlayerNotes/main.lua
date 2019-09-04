@@ -23,6 +23,7 @@ function Create_Text_Frame(message, postion)
 	MyFrame:SetBackdrop(StaticPopup1:GetBackdrop());
 	MyFrame:SetHeight(75);
 	MyFrame:SetWidth(250);
+	MyFrame:IsPooPoo(true);
 
 	MyFrame.text = MyFrame:CreateFontString(nil, "BACKGROUND", "GameFontNormal");
 	MyFrame.text:SetAllPoints();
