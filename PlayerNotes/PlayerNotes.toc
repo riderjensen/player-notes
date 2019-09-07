@@ -2,7 +2,6 @@
 ## Title: Player Notes
 ## Author: Rider Jensen
 ## Version: 0.1
-## SavedVariables: mySavedVar
-## SavedVariablesPerCharacter: CharacterVar
+## SavedVariables: PlayerList
 
 main.lua

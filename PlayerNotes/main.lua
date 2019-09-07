@@ -1,5 +1,7 @@
+PlayerList = {} 
+
 function MOD_TextFrame_OnUpdate()
-  if (MOD_TextFrameTime < GetTime() - 1) then
+  if (MOD_TextFrameTime <	 GetTime() - 1) then
     local alpha = MOD_TextFrame:GetAlpha();
     if (alpha ~= 0) then MOD_TextFrame:SetAlpha(alpha - .05); end
     if (alpha == 0) then MOD_TextFrame:Hide(); end
@@ -33,6 +35,7 @@ end
 -- ADD FRIEND FUNCTION
 function Add_Friend()
 	MOD_TextMessage("Friend Added");
+	PlayerList[UnitName("target")] = 0;
 	Hide_Buttons();
 
 end
@@ -40,6 +43,7 @@ end
 -- ADD ENEMY FUNCTION
 function Add_Enemy()
 	MOD_TextMessage("Enemy Added");
+	PlayerList[UnitName("target")] = 1;
 	Hide_Buttons();
 end
 
@@ -71,6 +75,20 @@ function Add_Comment()
 	Hide_Buttons();
 end
 
+function Check_FriendShip()
+	return PlayerList[UnitName("target")]
+end
+
+function Check_If_Player()
+	local guid = UnitGUID("target");
+	-- add some type of try catch to make sure we are getting a guid
+	if string.find(guid, "Player") then
+		return true;
+	  else
+		return nil;
+	  end
+end
+
 -- FRIEND BUTTON
 local friend_button = CreateFrame("Button");
 friend_button:SetPoint("TOP", 100, 0);
@@ -89,7 +107,7 @@ enemy_button:SetHeight(50);
 enemy_button:SetBackdrop({bgFile = "Interface/Tooltips/UI-Tooltip-Background", tile = true, tileSize = 16, insets = {left = 0, right = 0, top = 0, bottom = 0},})
 enemy_button:SetText("Enemy");
 enemy_button:SetNormalFontObject("GameFontNormal");
-enemy_button:SetScript("OnClick", Add_Enemy);
+enemy_button:SetScript("OnClick",  Add_Enemy);
 
 -- OTHER BUTTON
 local other_button = CreateFrame("Button");
@@ -115,7 +133,17 @@ MOD_TextFrameTime = 0;
 
 MOD_TextFrame:RegisterEvent("UNIT_TARGET")
 MOD_TextFrame:SetScript("OnEvent", function(self,event,...) 
-	Show_Buttons();
+	if Check_If_Player() then 
+		Hide_Buttons();
+		local checkVar = Check_FriendShip();
+		if checkVar == 1 then
+			print("Kill!");
+		elseif checkVar == 0 then
+			print("Friend!");
+		else 	
+			Show_Buttons();
+		end
+	end
 end)
 
 -- SHOW BUTTONS FUNCTION
