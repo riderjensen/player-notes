@@ -81,12 +81,35 @@ end
 
 function Check_If_Player()
 	local guid = UnitGUID("target");
-	-- add some type of try catch to make sure we are getting a guid
-	if string.find(guid, "Player") then
-		return true;
-	  else
-		return nil;
-	  end
+	if guid ~= nil then
+		if string.find(guid, "Player") then
+			return true;
+		else
+			return nil;
+		end
+	end
+end
+
+function Enemy_Glow()
+	Background_Glow = CreateFrame("frame");
+	Background_Glow:SetAllPoints();
+	Background_Glow:SetAlpha(1);
+	Background_Glow.texture = Background_Glow:CreateTexture();
+	Background_Glow.texture:SetAllPoints(Background_Glow);
+	Background_Glow.texture:SetDrawLayer("BACKGROUND");
+	Background_Glow.texture:SetBlendMode("ADD");
+	Background_Glow.texture:SetTexture("Interface\\FullScreenTextures\\OutOfControl");
+end
+
+function Friend_Glow()
+	Background_Glow = CreateFrame("frame");
+	Background_Glow:SetAllPoints();
+	Background_Glow:SetAlpha(1);
+	Background_Glow.texture = Background_Glow:CreateTexture();
+	Background_Glow.texture:SetAllPoints(Background_Glow);
+	Background_Glow.texture:SetDrawLayer("BACKGROUND");
+	Background_Glow.texture:SetBlendMode("ADD");
+	Background_Glow.texture:SetTexture("Interface\\FullScreenTextures\\LowHealth");
 end
 
 -- FRIEND BUTTON
@@ -94,7 +117,7 @@ local friend_button = CreateFrame("Button");
 friend_button:SetPoint("TOP", 100, 0);
 friend_button:SetWidth(100);
 friend_button:SetHeight(50);
-friend_button:SetBackdrop({bgFile = "Interface/Tooltips/UI-Tooltip-Background", tile = true, tileSize = 16, insets = {left = 0, right = 0, top = 0, bottom = 0},})
+friend_button:SetBackdrop({bgFile = "Interface\\FullScreenTextures\\LowHealth", stretch = true, tileSize = 16, insets = {left = 0, right = 0, top = 0, bottom = 0},})
 friend_button:SetText("Friend");
 friend_button:SetNormalFontObject("GameFontNormal");
 friend_button:SetScript("OnClick", Add_Friend);
@@ -104,7 +127,7 @@ local enemy_button = CreateFrame("Button");
 enemy_button:SetPoint("TOP", -100, 0);
 enemy_button:SetWidth(100);
 enemy_button:SetHeight(50);
-enemy_button:SetBackdrop({bgFile = "Interface/Tooltips/UI-Tooltip-Background", tile = true, tileSize = 16, insets = {left = 0, right = 0, top = 0, bottom = 0},})
+enemy_button:SetBackdrop({bgFile = "Interface\\FullScreenTextures\\OutOfControl", stretch = true, tileSize = 16, insets = {left = 0, right = 0, top = 0, bottom = 0},})
 enemy_button:SetText("Enemy");
 enemy_button:SetNormalFontObject("GameFontNormal");
 enemy_button:SetScript("OnClick",  Add_Enemy);
@@ -114,7 +137,7 @@ local other_button = CreateFrame("Button");
 other_button:SetPoint("TOP", 0, 0);
 other_button:SetWidth(100);
 other_button:SetHeight(50);
-other_button:SetBackdrop({bgFile = "Interface/Tooltips/UI-Tooltip-Background", tile = true, tileSize = 16, insets = {left = 0, right = 0, top = 0, bottom = 0},})
+other_button:SetBackdrop({bgFile = "Interface/AddOns/PlayerNotes/Textures/mage.tga", stretch = true, tileSize = 16, insets = {left = 0, right = 0, top = 0, bottom = 0},})
 other_button:SetText("Other");
 other_button:SetNormalFontObject("GameFontNormal");
 other_button:SetScript("OnClick", Add_Comment);
@@ -133,18 +156,21 @@ MOD_TextFrameTime = 0;
 
 MOD_TextFrame:RegisterEvent("UNIT_TARGET")
 MOD_TextFrame:SetScript("OnEvent", function(self,event,...) 
+	-- Clear Glow
 	if Check_If_Player() then 
 		Hide_Buttons();
 		local checkVar = Check_FriendShip();
 		if checkVar == 1 then
-			print("Kill!");
+			Enemy_Glow()
 		elseif checkVar == 0 then
-			print("Friend!");
+			Friend_Glow()
 		else 	
 			Show_Buttons();
 		end
 	end
 end)
+
+
 
 -- SHOW BUTTONS FUNCTION
 function Show_Buttons()
