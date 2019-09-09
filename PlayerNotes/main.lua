@@ -1,36 +1,25 @@
 PlayerList = {} 
 
 function MOD_TextFrame_OnUpdate()
-  if (MOD_TextFrameTime <	 GetTime() - 1) then
-    local alpha = MOD_TextFrame:GetAlpha();
-    if (alpha ~= 0) then MOD_TextFrame:SetAlpha(alpha - .05); end
-    if (alpha == 0) then MOD_TextFrame:Hide(); end
-  end
+	if (MOD_TextFrameTime <	 GetTime() - 1) then
+		local alpha = MOD_TextFrame:GetAlpha();
+		if (alpha ~= 0) then MOD_TextFrame:SetAlpha(alpha - .05); end
+		if (alpha == 0) then MOD_TextFrame:Hide(); end
+	end
 end
 
+function Background_Glow_OnUpdate()
+	print(self:GetAlpha())
+end
 
 -- For setting a message on the screen --
 function MOD_TextMessage(message)
-  MOD_TextFrame.text:SetText(message);
-  MOD_TextFrame:SetAlpha(1);
-  MOD_TextFrame:Show();
-  MOD_TextFrameTime = GetTime();
+	MOD_TextFrame.text:SetText(message);
+	MOD_TextFrame:SetAlpha(1);
+	MOD_TextFrame:Show();
+	MOD_TextFrameTime = GetTime();
 end
 
-
--- For creating a frame --
-function Create_Text_Frame(message, postion)
-	MyFrame = CreateFrame("Frame");
-	MyFrame:ClearAllPoints();
-	MyFrame:SetBackdrop(StaticPopup1:GetBackdrop());
-	MyFrame:SetHeight(75);
-	MyFrame:SetWidth(250);
-
-	MyFrame.text = MyFrame:CreateFontString(nil, "BACKGROUND", "GameFontNormal");
-	MyFrame.text:SetAllPoints();
-	MyFrame.text:SetText(message);
-	MyFrame:SetPoint(postion, 0, 0);
-end
 
 -- ADD FRIEND FUNCTION
 function Add_Friend()
@@ -90,57 +79,45 @@ function Check_If_Player()
 	end
 end
 
-function Enemy_Glow()
-	Background_Glow = CreateFrame("frame");
+
+function Glow(path)
+	Background_Glow = CreateFrame("frame", "FriendFrame");
 	Background_Glow:SetAllPoints();
 	Background_Glow:SetAlpha(1);
+	Background_Glow:SetScript("OnUpdate", Background_Glow_OnUpdate);
 	Background_Glow.texture = Background_Glow:CreateTexture();
 	Background_Glow.texture:SetAllPoints(Background_Glow);
 	Background_Glow.texture:SetDrawLayer("BACKGROUND");
 	Background_Glow.texture:SetBlendMode("ADD");
-	Background_Glow.texture:SetTexture("Interface\\FullScreenTextures\\OutOfControl");
+	Background_Glow.texture:SetTexture(path);
+	return Background_Glow;
 end
 
-function Friend_Glow()
-	Background_Glow = CreateFrame("frame");
-	Background_Glow:SetAllPoints();
-	Background_Glow:SetAlpha(1);
-	Background_Glow.texture = Background_Glow:CreateTexture();
-	Background_Glow.texture:SetAllPoints(Background_Glow);
-	Background_Glow.texture:SetDrawLayer("BACKGROUND");
-	Background_Glow.texture:SetBlendMode("ADD");
-	Background_Glow.texture:SetTexture("Interface\\FullScreenTextures\\LowHealth");
+
+function Button(position, text, functionCall)
+	local button = CreateFrame("Button");
+	button:SetPoint("TOP", position, 0);
+	button:SetWidth(100);
+	button:SetHeight(50);
+	button:SetBackdrop({bgFile = "Interface/AddOns/PlayerNotes/Textures/mage.tga", stretch = true, tileSize = 16, insets = {left = 0, right = 0, top = 0, bottom = 0},})
+	button:SetText(text);
+	button:SetNormalFontObject("GameFontNormal");
+	button:SetScript("OnClick", functionCall);
+	button:Hide();
+	return button;
 end
 
--- FRIEND BUTTON
-local friend_button = CreateFrame("Button");
-friend_button:SetPoint("TOP", 100, 0);
-friend_button:SetWidth(100);
-friend_button:SetHeight(50);
-friend_button:SetBackdrop({bgFile = "Interface\\FullScreenTextures\\LowHealth", stretch = true, tileSize = 16, insets = {left = 0, right = 0, top = 0, bottom = 0},})
-friend_button:SetText("Friend");
-friend_button:SetNormalFontObject("GameFontNormal");
-friend_button:SetScript("OnClick", Add_Friend);
+-- END FUNCTIONS --
 
--- ENEMY BUTTON
-local enemy_button = CreateFrame("Button");
-enemy_button:SetPoint("TOP", -100, 0);
-enemy_button:SetWidth(100);
-enemy_button:SetHeight(50);
-enemy_button:SetBackdrop({bgFile = "Interface\\FullScreenTextures\\OutOfControl", stretch = true, tileSize = 16, insets = {left = 0, right = 0, top = 0, bottom = 0},})
-enemy_button:SetText("Enemy");
-enemy_button:SetNormalFontObject("GameFontNormal");
-enemy_button:SetScript("OnClick",  Add_Enemy);
 
--- OTHER BUTTON
-local other_button = CreateFrame("Button");
-other_button:SetPoint("TOP", 0, 0);
-other_button:SetWidth(100);
-other_button:SetHeight(50);
-other_button:SetBackdrop({bgFile = "Interface/AddOns/PlayerNotes/Textures/mage.tga", stretch = true, tileSize = 16, insets = {left = 0, right = 0, top = 0, bottom = 0},})
-other_button:SetText("Other");
-other_button:SetNormalFontObject("GameFontNormal");
-other_button:SetScript("OnClick", Add_Comment);
+
+-- Start Declarations --
+EnemyGlow = Glow("Interface\\FullScreenTextures\\LowHealth");
+FriendGlow = Glow("Interface\\FullScreenTextures\\OutOfControl");
+Friend_Button = Button(100, "Friend", Add_Friend);
+Enemy_Button = Button(-100, "Enemy", Add_Enemy);
+Other_Button = Button(0, "Comment", Add_Comment);
+
 
 -- CREATING FRAME
 MOD_TextFrame = CreateFrame("frame");
@@ -156,34 +133,32 @@ MOD_TextFrameTime = 0;
 
 MOD_TextFrame:RegisterEvent("UNIT_TARGET")
 MOD_TextFrame:SetScript("OnEvent", function(self,event,...) 
-	-- Clear Glow
+	-- Hide the glows
+	EnemyGlow:Hide();
+	FriendGlow:Hide();
+	Hide_Buttons();
+
+	-- Check to see if there is a player
 	if Check_If_Player() then 
-		Hide_Buttons();
 		local checkVar = Check_FriendShip();
 		if checkVar == 1 then
-			Enemy_Glow()
+			EnemyGlow:Show();
 		elseif checkVar == 0 then
-			Friend_Glow()
+			FriendGlow:Show();
 		else 	
 			Show_Buttons();
 		end
 	end
 end)
 
-
-
--- SHOW BUTTONS FUNCTION
 function Show_Buttons()
-	enemy_button:Show();
-	friend_button:Show();
-	other_button:Show();
+	Enemy_Button:Show();
+	Friend_Button:Show();
+	Other_Button:Show();
 end
 
--- HIDE BUTTONS FUNCTION
 function Hide_Buttons()
-	enemy_button:Hide();
-	friend_button:Hide();
-	other_button:Hide();
+	Enemy_Button:Hide();
+	Friend_Button:Hide();
+	Other_Button:Hide();
 end
-
-Hide_Buttons();
