@@ -1,29 +1,38 @@
 PlayerList = {} 
 
-function MOD_TextFrame_OnUpdate()
-	if (MOD_TextFrameTime <	 GetTime() - 1) then
-		local alpha = MOD_TextFrame:GetAlpha();
-		if (alpha ~= 0) then MOD_TextFrame:SetAlpha(alpha - .05); end
-		if (alpha == 0) then MOD_TextFrame:Hide(); end
+function LowHPPulser_StartPulsing(frame)
+	if (frame.pulsing == "in") then
+		if (frame:GetAlpha() == 1) then
+			LowHPPulser_PulseOut(frame)
+		end
+	elseif (frame.pulsing == "out") then
+		if (frame:GetAlpha() == 0) then
+			LowHPPulser_PulseIn(frame)
+		end
+	else
+		frame:SetAlpha(0)
+		LowHPPulser_PulseIn(frame)
 	end
 end
 
-function Background_Glow_OnUpdate()
-	print(self:GetAlpha())
+function LowHPPulser_StopPulsing(frame)
+	frame.pulsing = false
+	UIFrameFadeIn(frame, 1, frame:GetAlpha(), 0)
 end
 
--- For setting a message on the screen --
-function MOD_TextMessage(message)
-	MOD_TextFrame.text:SetText(message);
-	MOD_TextFrame:SetAlpha(1);
-	MOD_TextFrame:Show();
-	MOD_TextFrameTime = GetTime();
+function LowHPPulser_PulseIn(frame)
+	frame.pulsing = "in"
+	UIFrameFadeIn(frame, 1, frame:GetAlpha(), 1)
+end
+
+function LowHPPulser_PulseOut(frame)
+	frame.pulsing = "out"
+	UIFrameFadeIn(frame, 1, frame:GetAlpha(), 0)
 end
 
 
 -- ADD FRIEND FUNCTION
 function Add_Friend()
-	MOD_TextMessage("Friend Added");
 	PlayerList[UnitName("target")] = 0;
 	Hide_Buttons();
 
@@ -31,7 +40,6 @@ end
 
 -- ADD ENEMY FUNCTION
 function Add_Enemy()
-	MOD_TextMessage("Enemy Added");
 	PlayerList[UnitName("target")] = 1;
 	Hide_Buttons();
 end
@@ -83,8 +91,8 @@ end
 function Glow(path)
 	Background_Glow = CreateFrame("frame", "FriendFrame");
 	Background_Glow:SetAllPoints();
-	Background_Glow:SetAlpha(1);
-	Background_Glow:SetScript("OnUpdate", Background_Glow_OnUpdate);
+	Background_Glow:SetScript("OnUpdate", LowHPPulser_StartPulsing)
+	Background_Glow:SetAlpha(0);
 	Background_Glow.texture = Background_Glow:CreateTexture();
 	Background_Glow.texture:SetAllPoints(Background_Glow);
 	Background_Glow.texture:SetDrawLayer("BACKGROUND");
@@ -112,39 +120,34 @@ end
 
 
 -- Start Declarations --
-EnemyGlow = Glow("Interface\\FullScreenTextures\\LowHealth");
-FriendGlow = Glow("Interface\\FullScreenTextures\\OutOfControl");
 Friend_Button = Button(100, "Friend", Add_Friend);
 Enemy_Button = Button(-100, "Enemy", Add_Enemy);
 Other_Button = Button(0, "Comment", Add_Comment);
+EnemyGlow = Glow("Interface\\FullScreenTextures\\LowHealth");
+FriendGlow = Glow("Interface\\FullScreenTextures\\OutOfControl");
 
 
 -- CREATING FRAME
 MOD_TextFrame = CreateFrame("frame");
-MOD_TextFrame:ClearAllPoints();
-MOD_TextFrame:SetHeight(300);
-MOD_TextFrame:SetWidth(300);
-MOD_TextFrame:SetScript("OnUpdate", MOD_TextFrame_OnUpdate);
-MOD_TextFrame:Hide();
-MOD_TextFrame.text = MOD_TextFrame:CreateFontString(nil, "BACKGROUND", "PVPInfoTextFont");
-MOD_TextFrame.text:SetAllPoints();
-MOD_TextFrame:SetPoint("CENTER", 0, 200);
 MOD_TextFrameTime = 0;
 
 MOD_TextFrame:RegisterEvent("UNIT_TARGET")
 MOD_TextFrame:SetScript("OnEvent", function(self,event,...) 
 	-- Hide the glows
-	EnemyGlow:Hide();
-	FriendGlow:Hide();
+
+
+	LowHPPulser_StopPulsing(EnemyGlow)
+	LowHPPulser_StopPulsing(FriendGlow)
+
 	Hide_Buttons();
 
 	-- Check to see if there is a player
 	if Check_If_Player() then 
 		local checkVar = Check_FriendShip();
 		if checkVar == 1 then
-			EnemyGlow:Show();
+			LowHPPulser_StartPulsing(EnemyGlow)
 		elseif checkVar == 0 then
-			FriendGlow:Show();
+			LowHPPulser_StartPulsing(FriendGlow)
 		else 	
 			Show_Buttons();
 		end
