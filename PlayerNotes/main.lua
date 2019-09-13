@@ -1,11 +1,11 @@
 PlayerList = {} 
 
-function LowHPPulser_StopPulsing(frame)
+function StopPulse(frame)
 	frame.pulsing = false
 	UIFrameFadeIn(frame, 0.5, frame:GetAlpha(), 0)
 end
 
-function LowHPPulser_PulseIn(frame)
+function StartPulse(frame)
 	frame.pulsing = "in"
 	UIFrameFadeIn(frame, 0.5, frame:GetAlpha(), 1)
 end
@@ -82,17 +82,17 @@ MOD_TextFrameTime = 0;
 MOD_TextFrame:RegisterEvent("UNIT_TARGET")
 MOD_TextFrame:SetScript("OnEvent", function(self,event,...) 
 	-- Hide the glows
-	LowHPPulser_StopPulsing(EnemyGlow)
-	LowHPPulser_StopPulsing(FriendGlow)
+	StopPulse(EnemyGlow)
+	StopPulse(FriendGlow)
 	Hide_Buttons();
 
 	-- Check to see if there is a player
 	if Check_If_Player() then 
 		local checkVar = Check_FriendShip();
 		if checkVar == 1 then
-			LowHPPulser_PulseIn(EnemyGlow)
+			StartPulse(EnemyGlow)
 		elseif checkVar == 0 then
-			LowHPPulser_PulseIn(FriendGlow)
+			StartPulse(FriendGlow)
 		else 	
 			Show_Buttons();
 		end
