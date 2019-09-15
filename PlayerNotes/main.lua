@@ -12,19 +12,19 @@ end
 
 -- ADD FRIEND FUNCTION
 function Add_Friend()
-	PlayerList[UnitName("target")] = 0;
+	PlayerList[UnitGUID("target")] = 0;
 	Hide_Buttons();
 
 end
 
 -- ADD ENEMY FUNCTION
 function Add_Enemy()
-	PlayerList[UnitName("target")] = 1;
+	PlayerList[UnitGUID("target")] = 1;
 	Hide_Buttons();
 end
 
 function Check_FriendShip()
-	return PlayerList[UnitName("target")]
+	return PlayerList[UnitGUID("target")]
 end
 
 function Check_If_Player()
