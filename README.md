@@ -9,6 +9,20 @@ A WoW Classic addon to take notes on other players
 3. Copy the PlayerNotes folder into your addons folder
 4. Enjoy!
 
+## Example
+
+Buttons 
+
+![Image of the WoW buttons near the player nameplates](https://i.imgur.com/PLz2qT4.png)
+
+Enemy glow
+
+![Image of the enemy glow in action](https://i.imgur.com/BTivJqG.png)
+
+Friend glow
+
+![Image of the freind glow in action](https://i.imgur.com/2N3OaIi.png)
+
 ## Future upgrades
 * Allow users to toggle whether the screen just shows red or if it pulses
 * Allow users to set the speed of the pulse
