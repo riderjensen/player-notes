@@ -69,8 +69,8 @@ end
 
 
 -- Start Declarations --
-Friend_Button = Button(-20, 150, "Friend", Add_Friend, "Interface/AddOns/PlayerNotes/Textures/Arrow-Up-Down.blp");
-Enemy_Button = Button(-35, 152, "Enemy", Add_Enemy, "Interface/AddOns/PlayerNotes/Textures/Arrow-Down-Up.blp");
+Friend_Button = Button(-20, 2, "Friend", Add_Friend, "Interface/AddOns/PlayerNotes/Textures/Arrow-Up-Down.blp");
+Enemy_Button = Button(-35, 4, "Enemy", Add_Enemy, "Interface/AddOns/PlayerNotes/Textures/Arrow-Down-Up.blp");
 EnemyGlow = Glow("Interface\\FullScreenTextures\\LowHealth");
 FriendGlow = Glow("Interface\\FullScreenTextures\\OutOfControl");
 
