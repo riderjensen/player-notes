@@ -13,15 +13,15 @@ A WoW Classic addon to take notes on other players
 
 Buttons 
 
-![Image of the WoW buttons near the player nameplates](https://i.imgur.com/PLz2qT4.png)
+![Image of the WoW buttons near the player nameplates](https://i.imgur.com/f6E55LQ.png)
 
 Enemy glow
 
-![Image of the enemy glow in action](https://i.imgur.com/BTivJqG.png)
+![Image of the enemy glow in action](https://i.imgur.com/F4EPxZj.jpg)
 
 Friend glow
 
-![Image of the freind glow in action](https://i.imgur.com/2N3OaIi.png)
+![Image of the freind glow in action](https://i.imgur.com/q4Aih1N.jpg)
 
 ## Future upgrades
 * Allow users to toggle whether the screen just shows red or if it pulses
