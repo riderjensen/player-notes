@@ -1,7 +1,7 @@
 ## Interface: 11302
 ## Title: Player Notes
 ## Author: Rider Jensen
-## Version: 0.1
+## Version: 1.0
 ## SavedVariables: PlayerList
 
 main.lua
